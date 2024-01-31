@@ -1,0 +1,186 @@
+--Matplotlib--
+
+PART-1
+
+print(plt.style.available)
+plt.style.use('fivethirtyeight')  # styles has their own default colors and grid
+plt.xkcd()  # comic style
+
+plt.plot(ages_x, dev_y, color='k', linestyle='--', marker='.', label='All Devs')
+
+plt.xlabel()
+plt.title()
+
+plt.legend()
+
+plt.grid(True)
+plt.tight_layout()
+
+plt.savefig('plot.png')
+
+plt.show()
+
+
+fmt = '[marker][line][color]'
+
+--------------------------
+PART-2
+
+x_indexes = np.arange(len(ages_x))
+width = 0.25
+
+plt.bar(x_indexes - width, dev_y, width=width, 
+        color='#444444', label='All Devs')  # .bar instead of .plot
+
+plt.xticks(ticks=x_indexes, labels=ages_x)
+
+ctrl + left click # choose multiple places to write simultaneously
+
+#plotting csv file
+
+with open('data.csv') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
+
+    language_counter = Counter()
+
+    for row in csv_reader:
+        language_counter.update(row["LanguagesWorkedWith"].split(";"))
+
+    #row = next(csv_reader)
+    #print(row["LanguagesWorkedWith"].split(";"))
+
+#plotting csv with using pandas
+
+data = pd.read_csv('data.csv')
+ids = data['Responder_id']
+lang_responses = data['LanguagesWorkedWith']
+language_counter = Counter()
+for response in lang_responses:
+    language_counter.update(response.split(';'))
+
+------------------
+PART-3
+
+# Use Pie Charts when less then 5 keys
+
+slices = [59219, 55466, 47544, 36443, 35917]
+labels = ['JavaScript', 'HTML/CSS', 'SQL', 'Python', 'Java']
+explode = [0, 0, 0, 0.1, 0]
+
+plt.pie(slices, labels=labels, explode=explode, shadow=True,
+        startangle = 90, autopct = '%1.1f%%',
+        wedgeprops={'edgecolor': 'black'} )  # autopct for percentages
+
+---------------
+PART-4
+
+# Stack plots are usually for comparing over time
+
+plt.stackplot(minutes, player1, player2, player3, labels=labels)
+
+----------------
+PART-5
+
+# Filling between line plots
+
+plt.fill_between(ages, py_salaries, js_salaries, where=(py_salaries > js_salaries), interpolate=True, alpha=0.25, label='Above Avg')
+plt.fill_between(ages, py_salaries, js_salaries, where=(py_salaries <= js_salaries), interpolate=True, color='r', alpha=0.25, label='Below Avg')  # also can add color
+
+-----------------
+PART-6
+
+# Histograms are better for interval of ages
+
+data = pd.read_csv('data.csv')
+ids = data['Responder_id']
+ages = data['Age']
+
+bins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+plt.hist(ages, bins=bins, edgecolor='k', log=True)
+
+median_age = 29
+
+plt.axvline(median_age, color=color, label='Age Median', 
+			linewidth=2)
+
+-------------------
+PART-7
+
+# Scatter plot are better for showing relations of two datas, especially looking for correlation
+
+data = pd.read_csv('2019-05-31-data.csv')
+view_count = data['view_count']
+likes = data['likes']
+ratio = data['ratio']
+
+plt.scatter(view_count, likes, c=ratio, cmap='summer', edgecolor='k', linewidth=1, alpha=0.75)  # marker='x'
+
+cbar = plt.colorbar()
+cbar.set_label('Like/Dislike Ratio')
+
+plt.xscale('log')
+plt.yscale('log')
+
+-----------------------
+PART-8
+
+# Plotting Time Series Data 
+
+# Getting spesific format
+#date_format = mpl_dates.DateFormatter('%d %b %Y')
+#plt.gca().xaxis.set_major_formatter(date_format)  #getcurrentaxis
+
+data = pd.read_csv('data.csv')
+
+data['Date'] = pd.to_datetime(data['Date'])
+data.sort_values('Date', inplace=True)
+
+price_date = data['Date']
+price_close = data['Close']
+
+plt.plot_date(price_date, price_close, linestyle='solid')
+
+plt.gcf().autofmt_xdate()
+
+-----------------------
+PART-9
+
+# Picking up real time data with CSV
+
+def animate(i):
+    data = pd.read_csv('data.csv')
+    x = data['x_value']
+    y1 = data['total_1']
+    y2 = data['total_2']
+
+    plt.cla()
+
+    plt.plot(x, y1, label='Channel 1')
+    plt.plot(x, y2, label='Channel 2')
+
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.savefig('plot.png')
+
+ani = FuncAnimation(plt.gcf(), animate, interval=1000)
+
+----------------------
+PART-10
+
+# Subplotting
+
+plt.gca() #getcurrentaxis
+plt.gcf() #getcurrentfigure
+
+fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)  # Unpacking ax's by ax1 and ax2
+
+#splitting plot
+
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+
+
+
+
+
